@@ -2,15 +2,15 @@ require("rspec")
 require("card")
 
 describe("#card") do
-  it("returns its suit") do
-    card_suit = "spades"
-    card = Card.new(card_suit, "")
-    expect(card.suit()).to eq("spades")
+  it("returns its value") do
+    card_rank = "J"
+    card = Card.new(card_rank, "")
+    expect(card.rank()).to eq("J")
   end
 
   it("returns its value") do
-    card_value = "Jack"
-    card = Card.new("", card_value)
-    expect(card.value()).to eq("Jack")
+    card_suit = "Spades"
+    card = Card.new("", card_suit)
+    expect(card.suit()).to eq("Spades")
   end
 end
