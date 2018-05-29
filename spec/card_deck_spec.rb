@@ -7,10 +7,9 @@ describe("#card_deck") do
     expect(deck.cards_left()).to eq(52)
   end
 
-  it("should be able to generate a deck and list a cardC in the deck") do
+  it("should be able to shuffle the deck") do
     deck = CardDeck.new()
-    index = 0
     cards = deck.list_cards()
-    expect(cards[index].class).to eq(Card)
+    expect(deck.shuffle!()).not_to eq(cards)
   end
 end

@@ -15,4 +15,8 @@ class CardDeck
     @cards_left = @cards.length
     @list_cards = @cards
   end
+
+  def shuffle!()
+    @cards.sort_by {rand}
+  end
 end
