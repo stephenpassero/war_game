@@ -1,5 +1,6 @@
 require("rspec")
 require("game")
+require("card_deck")
 
 describe("#game") do
   # it("should be able to create a new deck") do
@@ -8,18 +9,23 @@ describe("#game") do
   #   expect(deck.cards_left).to eq(52)
   # end
 
-  it("should be able to split up the deck between both players") do
+  it("should split up the deck between both players at the start of the game") do
     game = Game.new()
-    player1 = Player.new()
-    player2 = Player.new()
-    deck = CardDeck.new()
-    game.distribute_deck(player1, player2, deck)
-    expect(player1.deck.cards_left).to eq(deck.cards_left / 2)
+    game.start_game
+    expect(game.player1.deck.cards_left).to eq(CardDeck.new.cards_left / 2)
+    expect(game.player1.deck.cards_left).to eq(game.player2.deck.cards_left)
   end
 
   it("should be able to start a round") do
     game = Game.new()
-    expect(game.start_round().rank).to eq(8)
+    # game.start_game()
+    card1 = Card.new("J", "Spades")
+    card2 = Card.new(7, "Diamonds")
+    game.player1.set_hand([card1])
+    game.player2.set_hand([card2])
+    game.start_round()
+    expect(game.player1.cards_left).to eq(2)
+    expect(game.player2.cards_left).to eq(0)
   end
 
   it("should judge who wins the round") do
