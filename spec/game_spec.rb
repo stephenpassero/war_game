@@ -2,6 +2,12 @@ require("rspec")
 require("game")
 
 describe("#game") do
+  it("should be able to create a new deck") do
+    game = Game.new()
+    deck = game.new_deck()
+    expect(deck.cards_left).to eq(52)
+  end
+
   it("should split up the deck between both players") do
     game = Game.new()
     player1 = Player.new()

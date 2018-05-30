@@ -24,6 +24,13 @@ describe("card_deck") do
     expect(deck.list_cards()).to eq([card1, card2, card3])
   end
 
+  it("should be able to add a card at a time to the deck") do
+    deck = CardDeck.new()
+    card1 = Card.new("J", "Spades")
+    deck.add(card1)
+    expect(deck.cards_left()).to eq(53)
+  end
+
   describe("#play_top_card") do
     it("should return the top card of the deck") do
       card_rank = 2

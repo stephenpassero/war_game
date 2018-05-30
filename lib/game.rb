@@ -1,11 +1,17 @@
 require("pry")
+require("card_deck")
 
 class Game
   def initialize()
     @cardValues = {1 => 1, 2 => 2, 3 => 3, 4 => 4, 5 => 5, 6 => 6, 7 => 7, 8 => 8, 9 => 9, 10 => 10, "J" => 11, "Q" => 12, "K" => 13, "A" => 14, }
   end
 
+  def new_deck()
+    deck = CardDeck.new()
+  end
+
   def distribute_deck(first_player, second_player, deck_to_distribute)
+    deck_to_distribute.shuffle!()
     two_decks = deck_to_distribute.split_in_two()
     first_player.deck = CardDeck.new(two_decks[0])
     second_player.deck = CardDeck.new(two_decks[1])

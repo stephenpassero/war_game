@@ -20,6 +20,10 @@ class CardDeck
     @list_cards = @cards
   end
 
+  def add(card_to_add)
+    @cards.push(card_to_add)
+  end
+
   def cards_left()
     @cards.length
   end
