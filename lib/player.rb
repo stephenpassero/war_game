@@ -1,10 +1,11 @@
 require("card_deck")
+require("pry")
 
 class Player
   attr_accessor(:deck)
 
   def initialize()
-    @deck = [];
+    @deck = CardDeck.new([]);
     @discard_pile = []
   end
 
@@ -16,4 +17,7 @@ class Player
     @discard_pile
   end
 
+  def play_top_card()
+    @deck.play_top_card
+  end
 end

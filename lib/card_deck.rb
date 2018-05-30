@@ -20,8 +20,10 @@ class CardDeck
     @list_cards = @cards
   end
 
-  def add(card_to_add)
-    @cards.push(card_to_add)
+  def add(cards_to_add)
+    cards_to_add.each do |card|
+      @cards.push(card)
+    end
   end
 
   def cards_left()
@@ -37,6 +39,7 @@ class CardDeck
   end
 
   def split_in_two()
+    # returns an array containing two equal arrays
     @cards.each_slice(@cards.length / 2).to_a
   end
 end

@@ -13,4 +13,11 @@ describe("#player") do
     player.put_in_discard(card)
     expect(player.discard_pile).to eq([card])
   end
+
+  it("should be able to play the top card of its deck") do
+    player = Player.new()
+    deck = CardDeck.new()
+    player.deck = deck
+    expect(player.play_top_card().rank).to eq(2)
+  end
 end

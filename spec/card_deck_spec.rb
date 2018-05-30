@@ -24,10 +24,10 @@ describe("card_deck") do
     expect(deck.list_cards()).to eq([card1, card2, card3])
   end
 
-  it("should be able to add a card at a time to the deck") do
+  it("should be able to add cards to the deck") do
     deck = CardDeck.new()
     card1 = Card.new("J", "Spades")
-    deck.add(card1)
+    deck.add([card1])
     expect(deck.cards_left()).to eq(53)
   end
 
