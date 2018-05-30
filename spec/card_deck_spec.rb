@@ -1,5 +1,6 @@
 require("rspec")
 require("card_deck")
+require("pry")
 
 describe("card_deck") do
 
@@ -27,5 +28,11 @@ describe("card_deck") do
       deck.play_top_card()
       expect(deck.cards_left()).to eq(51)
     end
+  end
+
+  it("can split into two decks") do
+    deck = CardDeck.new()
+    twoDecks = deck.split_in_two().to_a
+    expect(twoDecks[0].length).to eq(deck.cards_left() / 2)
   end
 end

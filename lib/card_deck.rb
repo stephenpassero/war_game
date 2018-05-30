@@ -27,4 +27,8 @@ class CardDeck
   def play_top_card()
     @cards.shift()
   end
+
+  def split_in_two()
+    @cards.each_slice(@cards.length / 2)
+  end
 end
