@@ -20,7 +20,7 @@ describe("card_deck") do
     card1 = Card.new("A", "Hearts")
     card2 = Card.new(4, "Diamonds")
     card3 = Card.new(9, "Spades")
-    deck = CardDeck.new(card1, card2, card3)
+    deck = CardDeck.new([card1, card2, card3])
     expect(deck.list_cards()).to eq([card1, card2, card3])
   end
 
