@@ -12,7 +12,7 @@ class CardDeck
       suits.each do |suit|
         @cards.push(Card.new(rank, suit))
       end
-    endg
+    end
     @list_cards = @cards
   end
 
