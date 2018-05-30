@@ -1,5 +1,6 @@
 require("rspec")
 require("card_deck")
+require("card")
 require("pry")
 
 describe("card_deck") do
@@ -13,6 +14,14 @@ describe("card_deck") do
     deck = CardDeck.new()
     cards = deck.list_cards()
     expect(deck.shuffle!()).not_to eq(cards)
+  end
+
+  it("should be able to create a new deck using an existing array") do
+    card1 = Card.new("A", "Hearts")
+    card2 = Card.new(4, "Diamonds")
+    card3 = Card.new(9, "Spades")
+    deck = CardDeck.new(card1, card2, card3)
+    expect(deck.list_cards()).to eq([card1, card2, card3])
   end
 
   describe("#play_top_card") do

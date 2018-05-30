@@ -4,13 +4,17 @@ require("pry")
 class CardDeck
   attr_reader(:list_cards)
 
-  def initialize()
+  def initialize(*cards)
     ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
     suits = ["Hearts", "Diamonds", "Clubs", "Spades"]
     @cards = []
-    ranks.each do |rank|
-      suits.each do |suit|
-        @cards.push(Card.new(rank, suit))
+    if cards.length > 0
+      @cards = cards
+    else
+      ranks.each do |rank|
+        suits.each do |suit|
+          @cards.push(Card.new(rank, suit))
+        end
       end
     end
     @list_cards = @cards
