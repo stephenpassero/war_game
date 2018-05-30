@@ -12,9 +12,6 @@ class Game
     @player2 = Player.new()
   end
 
-  # def create_new_deck()
-  #   deck = CardDeck.new()
-  # end
   def start_game
     distribute_deck(@player1, @player2, @deck)
   end

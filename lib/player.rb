@@ -20,4 +20,8 @@ class Player
   def play_top_card()
     @deck.play_top_card
   end
+
+  def set_hand(arr_of_cards)
+    deck.add(arr_of_cards)
+  end
 end
