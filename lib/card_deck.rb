@@ -1,4 +1,4 @@
-require("card")
+require("./card")
 require("pry")
 
 class CardDeck
@@ -31,7 +31,7 @@ class CardDeck
   end
 
   def shuffle!()
-    @cards.sort_by {rand}
+    @cards.shuffle!
   end
 
   def play_top_card()

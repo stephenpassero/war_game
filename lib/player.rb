@@ -1,4 +1,4 @@
-require("card_deck")
+require_relative("card_deck")
 require("pry")
 
 class Player
