@@ -12,9 +12,9 @@ describe("card_deck") do
 
   it("should be able to shuffle the deck") do
     deck = CardDeck.new()
-    orig_cards = deck.cards.clone
+    original_cards = deck.cards.clone
     deck.shuffle!()
-    expect(deck.cards).not_to match_array(orig_cards)
+    expect(deck.cards).not_to eq(original_cards)
   end
 
   it("should be able to create a new deck using an existing array") do
