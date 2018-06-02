@@ -4,4 +4,8 @@ class Card
     @rank = card_rank
     @suit = card_suit
   end
+
+  def to_s
+    return "#{@rank} #{@suit}"
+  end
 end

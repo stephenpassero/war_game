@@ -1,5 +1,5 @@
 require("rspec")
-require("card")
+require_relative("../lib/card")
 
 describe("card") do
 

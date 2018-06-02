@@ -1,5 +1,5 @@
 require("rspec")
-require("player")
+require_relative("../lib/player")
 
 describe("#player") do
   it("should have a deck of cards") do

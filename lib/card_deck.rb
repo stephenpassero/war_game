@@ -1,8 +1,8 @@
-require("./card")
+require_relative("./card")
 require("pry")
 
 class CardDeck
-  attr_reader(:list_cards)
+  attr_reader(:cards)
 
   def initialize(*arrOfCards)
     ranks = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
@@ -17,7 +17,6 @@ class CardDeck
         end
       end
     end
-    @list_cards = @cards
   end
 
   def add(cards_to_add)

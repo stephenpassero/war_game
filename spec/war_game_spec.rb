@@ -1,17 +1,17 @@
 require("rspec")
-require("game")
-require("card_deck")
+require_relative("../lib/war_game")
+require_relative("../lib/card_deck")
 
-describe("#game") do
+describe("war_game") do
   it("should split up the deck between both players at the start of the game") do
-    game = Game.new()
+    game = WarGame.new()
     game.start_game
     expect(game.player1.deck.cards_left).to eq(CardDeck.new.cards_left / 2)
     expect(game.player1.deck.cards_left).to eq(game.player2.deck.cards_left)
   end
 
   it("should be able to start a round") do
-    game = Game.new()
+    game = WarGame.new()
     card1 = Card.new("J", "Spades")
     card2 = Card.new(7, "Diamonds")
     game.player1.set_hand([card1])
