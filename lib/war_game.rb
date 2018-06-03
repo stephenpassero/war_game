@@ -44,10 +44,20 @@ class WarGame
     card1_value = @cardValues.fetch(card1.rank)
     card2_value = @cardValues.fetch(card2.rank)
     if card1_value > card2_value
-      @player1.deck.add([card1, card2])
+      random_num = 1 + rand(2)
+      if random_num == 1
+        @player1.deck.add([card1, card2])
+      else
+        @player1.deck.add([card2, card1])
+      end
       return "Player 1 took a #{card2.rank} of #{card2.suit} with a #{card1.rank} of #{card1.suit}"
     elsif card2_value > card1_value
-      @player2.deck.add([card1, card2])
+      random_num = 1 + rand(2)
+      if random_num == 1
+        @player2.deck.add([card1, card2])
+      else
+        @player2.deck.add([card2, card1])
+      end
       return "Player 2 took a #{card1.rank} of #{card1.suit} with a #{card2.rank} of #{card2.suit}"
     elsif card1_value == card2_value
       handle_war(card1, card2)
