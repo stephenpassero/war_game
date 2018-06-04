@@ -36,56 +36,40 @@ class WarGame
 end
 
   private
+  def value(card)
+    @cardValues.fetch(card.rank)
+  end
+
   def judge(card1, card2)
-    card1_value = @cardValues.fetch(card1.rank)
-    card2_value = @cardValues.fetch(card2.rank)
-    if card1_value > card2_value
-      random_num = 1 + rand(2)
-      if random_num == 1
-        @player1.deck.add([card1, card2])
-      else
-        @player1.deck.add([card2, card1])
-      end
+    cards = [card1, card2].shuffle
+    if value(card1) > value(card2)
+      @player1.deck.add(cards)
       return "Player 1 took a #{card2.rank} of #{card2.suit} with a #{card1.rank} of #{card1.suit}"
-    elsif card2_value > card1_value
-      random_num = 1 + rand(2)
-      if random_num == 1
-        @player2.deck.add([card1, card2])
-      else
-        @player2.deck.add([card2, card1])
-      end
+    elsif value(card2) > value(card1)
+      @player2.deck.add(cards)
       return "Player 2 took a #{card1.rank} of #{card1.suit} with a #{card2.rank} of #{card2.suit}"
-    elsif card1_value == card2_value
-      handle_war(card1, card2)
+    else # values are equal
+      handle_war(cards)
     end
   end
 
-  def handle_war(card1, card2, *card_collection)
-    collection_of_cards = []
-    if card_collection.length > 0
-      collection_of_cards = card_collection[0]
-    end
+  def handle_war(card_collection)
     if @player1.deck.cards_left >= 4 && @player2.deck.cards_left >= 4
-      collection_of_cards.push(card1, card2)
-      counter = 0
-      until counter >= 3
-        collection_of_cards.push(@player1.play_top_card(), @player2.play_top_card())
-        counter += 1
-      end
+      3.times {card_collection.push(@player1.play_top_card(), @player2.play_top_card())}
       new_card1 = @player1.play_top_card()
       new_card2 = @player2.play_top_card()
-      collection_of_cards.push(new_card1, new_card2)
-      new_card1_value = @cardValues.fetch(new_card1.rank)
-      new_card2_value = @cardValues.fetch(new_card2.rank)
-      if new_card1_value > new_card2_value
-        @player1.deck.add(collection_of_cards)
+      card_collection.push(new_card1, new_card2)
+      new_card1_value = value(new_card1)
+      new_card2_value = value(new_card2)
+      if value(new_card1) > value(new_card2)
+        @player1.deck.add(card_collection)
         return "War! Player 1 took a #{new_card2.rank} of #{new_card2.suit} with a #{new_card1.rank} of #{new_card1.suit}"
-      elsif new_card2_value > new_card1_value
-        @player2.deck.add(collection_of_cards)
+      elsif value(new_card2) > value(new_card1)
+        @player2.deck.add(card_collection)
         return "War! Player 2 took a #{new_card1.rank} of #{new_card1.suit} with a #{new_card2.rank} of #{new_card2.suit}"
-      elsif new_card2_value == new_card1_value
+      else # value(new_card2) == value(new_card1)
         puts "Double War!"
-        handle_war(new_card1, new_card2, collection_of_cards)
+        handle_war(card_collection)
       end
     else
       return "Game Over"

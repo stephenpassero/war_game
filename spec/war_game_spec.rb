@@ -10,7 +10,7 @@ describe("war_game") do
     expect(game.player1.deck.cards_left).to eq(game.player2.deck.cards_left)
   end
 
-  it("should be able to start a round") do
+  it("should be able to start a non-war round") do
     game = WarGame.new()
     card1 = Card.new("J", "Spades")
     card2 = Card.new(7, "Diamonds")
@@ -21,12 +21,14 @@ describe("war_game") do
     expect(game.player2.deck.cards_left).to eq(0)
   end
 
-  # it("should judge who wins the round") do
-  #   game = Game.new()
-  #   card1 = Card.new("J", "Spades")
-  #   card2 = Card.new(7, "Diamonds")
-  #   card3 = Card.new(3, "Hearts")
-  #   expect(game.judge(card1, card2)).to eq(card1)
-  #   expect(game.judge(card3, card2)).to eq(card2)
-  # end
+  it("should judge who wins a war round") do
+    game = WarGame.new()
+    game.player1.set_hand([Card.new("J", "Spades"), Card.new(10, "Spades"), Card.new(9, "Spades"), Card.new(8, "Spades"), Card.new(7, "Spades"), Card.new(6, "Spades")])
+    game.player2.set_hand([Card.new("J", "Hearts"), Card.new(10, "Hearts"), Card.new(9, "Hearts"), Card.new(8, "Hearts"), Card.new(6, "Hearts"), Card.new(7, "Hearts")])
+    player1_count = game.player1.deck.cards_left
+    player2_count = game.player2.deck.cards_left
+    game.start_round()
+    expect(game.player1.deck.cards_left).to eq(player1_count + 5)
+    expect(game.player2.deck.cards_left).to eq(player2_count - 5)
+  end
 end
