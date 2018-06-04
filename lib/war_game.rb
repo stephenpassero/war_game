@@ -45,42 +45,35 @@ class WarGame
   end
 
   def judge(card1, card2)
-    card1_value = value(card1)
-    card2_value = value(card2)
     cards = [card1, card2].shuffle
-    if card1_value > card2_value
+    if value(card1) > value(card2)
       @player1.deck.add(cards)
       return "Player 1 took a #{card2.rank} of #{card2.suit} with a #{card1.rank} of #{card1.suit}"
-    elsif card2_value > card1_value
+    elsif value(card2) > value(card1)
       @player2.deck.add(cards)
       return "Player 2 took a #{card1.rank} of #{card1.suit} with a #{card2.rank} of #{card2.suit}"
-    elsif card1_value == card2_value
-      handle_war(card1, card2)
+    else # values are equal
+      handle_war(cards)
     end
   end
 
-  def handle_war(card1, card2, *card_collection)
-    collection_of_cards = []
-    if card_collection.length > 0
-      collection_of_cards = card_collection[0]
-    end
+  def handle_war(card_collection)
     if @player1.deck.cards_left >= 4 && @player2.deck.cards_left >= 4
-      collection_of_cards.push(card1, card2)
-      3.times {collection_of_cards.push(@player1.play_top_card(), @player2.play_top_card())}
+      3.times {card_collection.push(@player1.play_top_card(), @player2.play_top_card())}
       new_card1 = @player1.play_top_card()
       new_card2 = @player2.play_top_card()
-      collection_of_cards.push(new_card1, new_card2)
+      card_collection.push(new_card1, new_card2)
       new_card1_value = value(new_card1)
       new_card2_value = value(new_card2)
-      if new_card1_value > new_card2_value
-        @player1.deck.add(collection_of_cards)
+      if value(new_card1) > value(new_card2)
+        @player1.deck.add(card_collection)
         return "War! Player 1 took a #{new_card2.rank} of #{new_card2.suit} with a #{new_card1.rank} of #{new_card1.suit}"
-      elsif new_card2_value > new_card1_value
-        @player2.deck.add(collection_of_cards)
+      elsif value(new_card2) > value(new_card1)
+        @player2.deck.add(card_collection)
         return "War! Player 2 took a #{new_card1.rank} of #{new_card1.suit} with a #{new_card2.rank} of #{new_card2.suit}"
-      elsif new_card2_value == new_card1_value
+      else # value(new_card2) == value(new_card1)
         puts "Double War!"
-        handle_war(new_card1, new_card2, collection_of_cards)
+        handle_war(card_collection)
       end
     else
       return "Game Over"
