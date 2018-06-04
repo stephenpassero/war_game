@@ -33,11 +33,7 @@ class WarGame
       return true;
     end
   end
-
-  def shuffle_hand()
-    @player1.deck.shuffle!
-    @player2.deck.shuffle!
-  end
+end
 
   private
   def judge(card1, card2)

@@ -2,14 +2,12 @@ require_relative("war_game")
 
 game = WarGame.new()
 game.start_game()
-until game.winner() do 
+until game.winner() do
     result = game.start_round()
     if result == "Game Over"
       break;
     else
       puts result
-      # game.player1.deck.shuffle!
-      # game.player2.deck.shuffle!
     end
 end
 if game.player1.deck.cards_left < 4
