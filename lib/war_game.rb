@@ -40,24 +40,19 @@ class WarGame
   end
 
   private
+  def value(card)
+    @cardValues.fetch(card.rank)
+  end
+
   def judge(card1, card2)
-    card1_value = @cardValues.fetch(card1.rank)
-    card2_value = @cardValues.fetch(card2.rank)
+    card1_value = value(card1)
+    card2_value = value(card2)
+    cards = [card1, card2].shuffle
     if card1_value > card2_value
-      random_num = 1 + rand(2)
-      if random_num == 1
-        @player1.deck.add([card1, card2])
-      else
-        @player1.deck.add([card2, card1])
-      end
+      @player1.deck.add(cards)
       return "Player 1 took a #{card2.rank} of #{card2.suit} with a #{card1.rank} of #{card1.suit}"
     elsif card2_value > card1_value
-      random_num = 1 + rand(2)
-      if random_num == 1
-        @player2.deck.add([card1, card2])
-      else
-        @player2.deck.add([card2, card1])
-      end
+      @player2.deck.add(cards)
       return "Player 2 took a #{card1.rank} of #{card1.suit} with a #{card2.rank} of #{card2.suit}"
     elsif card1_value == card2_value
       handle_war(card1, card2)
@@ -71,16 +66,12 @@ class WarGame
     end
     if @player1.deck.cards_left >= 4 && @player2.deck.cards_left >= 4
       collection_of_cards.push(card1, card2)
-      counter = 0
-      until counter >= 3
-        collection_of_cards.push(@player1.play_top_card(), @player2.play_top_card())
-        counter += 1
-      end
+      3.times {collection_of_cards.push(@player1.play_top_card(), @player2.play_top_card())}
       new_card1 = @player1.play_top_card()
       new_card2 = @player2.play_top_card()
       collection_of_cards.push(new_card1, new_card2)
-      new_card1_value = @cardValues.fetch(new_card1.rank)
-      new_card2_value = @cardValues.fetch(new_card2.rank)
+      new_card1_value = value(new_card1)
+      new_card2_value = value(new_card2)
       if new_card1_value > new_card2_value
         @player1.deck.add(collection_of_cards)
         return "War! Player 1 took a #{new_card2.rank} of #{new_card2.suit} with a #{new_card1.rank} of #{new_card1.suit}"
