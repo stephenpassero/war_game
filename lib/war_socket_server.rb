@@ -24,6 +24,11 @@ class WarSocketServer
   def accept_new_client(player_name = "Random Player")
     client = @server.accept_nonblock
     @pending_clients.push(client)
+    if @pending_clients.size.odd?
+      client.puts("Welcome! Waiting for other players to join...")
+    else
+      client.puts("Welcome! The war will begin shortly.")
+    end
     # associate player and client
   rescue IO::WaitReadable, Errno::EINTR
     puts "No client to accept"

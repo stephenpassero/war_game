@@ -46,18 +46,24 @@ describe WarSocketServer do
   it "accepts new clients and starts a game if possible" do
     @server.start
     client1 = MockWarSocketClient.new(@server.port_number)
-    @clients.push(client1)
     @server.accept_new_client("Player 1")
     @server.create_game_if_possible
     expect(@server.games.count).to be 0
     client2 = MockWarSocketClient.new(@server.port_number)
-    @clients.push(client2)
     @server.accept_new_client("Player 2")
     @server.create_game_if_possible
     expect(@server.games.count).to be 1
   end
 
-  
+  it "gives each player a response when they join" do
+    @server.start
+    client1 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 1")
+    expect(client1.capture_output).to eq("Welcome! Waiting for other players to join...\n")
+    client2 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 2")
+    expect(client2.capture_output).to eq("Welcome! The war will begin shortly.\n")
+  end
 
   # Add more tests to make sure the game is being played
   # For example:
