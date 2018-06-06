@@ -29,8 +29,10 @@ class WarGame
   end
 
   def winner()
-    if @player1.deck.cards_left == 0 || @player2.deck.cards_left == 0
-      return true;
+    if @player1.deck.cards_left == 0
+      return "Player 1";
+    elsif @player2.deck.cards_left == 0
+      return "Player 2"
     end
   end
 end
@@ -68,10 +70,11 @@ end
         @player2.deck.add(card_collection)
         return "War! Player 2 took a #{new_card1.rank} of #{new_card1.suit} with a #{new_card2.rank} of #{new_card2.suit}"
       else # value(new_card2) == value(new_card1)
-        puts "Double War!"
         handle_war(card_collection)
       end
-    else
-      return "Game Over"
+    elsif @player1.deck.cards_left >= 4 && @player2.deck.cards_left < 4
+      return "Player 1"
+    elsif @player1.deck.cards_left < 4 && @player2.deck.cards_left > 4
+      return "Player 2"
     end
   end

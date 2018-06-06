@@ -172,4 +172,18 @@ describe WarSocketServer do
       expect(client2_output).to include("Player 1 took a Q of Hearts with a K of Spades")
     end
   end
+
+    # it "#ready_to_play should remember each client's response" do
+    #   @server.start
+    #   client1 = MockWarSocketClient.new(@server.port_number)
+    #   @server.accept_new_client("Player 1")
+    #   client2 = MockWarSocketClient.new(@server.port_number)
+    #   @server.accept_new_client("Player 2")
+    #   @clients.push(client1, client2)
+    #   client1.provide_input("yes")
+    #   expect(@server.create_game_if_possible)
+    #   client2.provide_input("yes")
+    #
+    #
+    # end
 end

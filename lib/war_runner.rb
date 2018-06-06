@@ -4,7 +4,7 @@ game = WarGame.new()
 game.start_game()
 until game.winner() do
     result = game.start_round()
-    if result == "Game Over"
+    if result == "Player 1" || result == "Player 2"
       break;
     else
       puts result

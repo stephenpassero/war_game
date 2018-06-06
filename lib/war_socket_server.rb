@@ -1,5 +1,4 @@
 require 'socket'
-require 'war_socket_server'
 require_relative 'war_game'
 require('pry')
 
@@ -43,10 +42,14 @@ class WarSocketServer
   end
 
   def create_game_if_possible()
-    # client1 = @pending_clients[0]
-    # client2 = @pending_clients[1]
-    # client1.puts("Are you ready to commence?")
-    # client2.puts("Are you ready to commence?")
+    if @pending_clients[0]
+      client1 = @pending_clients[0]
+      client1.puts("Are you ready to commence?")
+    end
+    if @pending_clients[1]
+      client2 = @pending_clients[1]
+      client2.puts("Are you ready to commence?")
+    end
     if @pending_clients.length == 2 && ready_to_play?(@pending_clients[0], @pending_clients[1])
       game = WarGame.new()
       @games_to_clients.store(game, @pending_clients.shift(2))
@@ -85,10 +88,21 @@ class WarSocketServer
       client1.puts("Are you ready to commence?")
       client2.puts("Are you ready to commence?")
       if ready_to_play?(client1, client2)
-        run_round(game)
+        run_round_value = run_round(game)
+        if run_round_value == "Player 1"
+          client1.puts("Game Over... Player 1 has won!")
+          client2.puts("Game Over... Player 1 has won!")
+          break;
+        elsif run_round_value == "Player 2"
+          client1.puts("Game Over... Player 2 has won!")
+          client2.puts("Game Over... Player 2 has won!")
+          break;
+        end
       end
+      # Client is informed of round results in run_round
     end
-    end_game(game)
+    client1.puts("Game Over... #{game.winner} has won!")
+    client2.puts("Game Over... #{game.winner} has won!")
   end
 
   private
