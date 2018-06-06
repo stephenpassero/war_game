@@ -48,13 +48,17 @@ describe WarSocketServer do
     client1 = MockWarSocketClient.new(@server.port_number)
     @server.accept_new_client("Player 1")
     @server.create_game_if_possible
-    expect(@server.games.count).to be 0
+    expect(@server.games_to_clients.count).to be 0
     client2 = MockWarSocketClient.new(@server.port_number)
     client2.provide_input("yes")
     client1.provide_input("yes")
     @server.accept_new_client("Player 2")
     @server.create_game_if_possible
-    expect(@server.games.count).to be 1
+    expect(@server.games_to_clients.count).to be 1
+    client3 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 3")
+    client3.provide_input("yes")
+    expect(@server.games_to_clients.count).to be 1
   end
 
   it "gives each player a response when they join" do
@@ -77,5 +81,38 @@ describe WarSocketServer do
     client1.provide_input("yes")
     client2.provide_input("yes")
     expect(@server.create_game_if_possible).to eq(true)
+  end
+
+  it "assigns a game to two clients" do
+    @server.start
+    client1 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 1")
+    client2 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 2")
+    client2.provide_input("yes")
+    client1.provide_input("yes")
+    @server.create_game_if_possible
+    num_of_clients = 2
+    expect(@server.games_to_clients.values[0].length).to eq(num_of_clients)
+  end
+
+  it "creates multiple games for more than 3 players" do
+    @server.start
+    client1 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 1")
+    client2 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 2")
+    client2.provide_input("yes")
+    client1.provide_input("yes")
+    @server.create_game_if_possible
+    client3 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 3")
+    client4 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 4")
+    client3.provide_input("yes")
+    client4.provide_input("yes")
+    @server.create_game_if_possible
+    num_of_games = 2
+    expect(@server.games_to_clients.length).to eq(num_of_games)
   end
 end

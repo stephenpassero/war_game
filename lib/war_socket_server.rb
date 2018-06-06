@@ -6,15 +6,15 @@ require('pry')
 class WarSocketServer
   def initialize
     @pending_clients = []
-    @games = []
+    @games_to_clients = {}
   end
 
   def port_number
     3001
   end
 
-  def games
-    @games
+  def games_to_clients
+    @games_to_clients
   end
 
   def start
@@ -37,8 +37,7 @@ class WarSocketServer
   def create_game_if_possible
     ready_to_play_value = ready_to_play?
     if @pending_clients.length.even? && ready_to_play_value
-      @games.push(WarGame.new())
-      @pending_clients.shift(2)
+      @games_to_clients.store(WarGame.new(), @pending_clients.shift(2))
     end
     ready_to_play_value
   end
@@ -68,7 +67,7 @@ class WarSocketServer
         return false
       end
     end
-    if capture_output(client1) == "yes"
+    if capture_output(client1) == "yes\n"
       return true
     else
       return false
