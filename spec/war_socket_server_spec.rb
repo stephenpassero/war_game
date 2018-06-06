@@ -51,9 +51,9 @@ describe WarSocketServer do
     @server.create_game_if_possible
     expect(@server.num_of_games).to be 0
     client2 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 2")
     client2.provide_input("yes")
     client1.provide_input("yes")
-    @server.accept_new_client("Player 2")
     @server.create_game_if_possible
     expect(@server.num_of_games).to be 1
     client3 = MockWarSocketClient.new(@server.port_number)
@@ -78,10 +78,10 @@ describe WarSocketServer do
     @server.accept_new_client("Player 1")
     client2 = MockWarSocketClient.new(@server.port_number)
     @server.accept_new_client("Player 2")
-    expect(@server.create_game_if_possible).to eq(false)
+    expect(@server.create_game_if_possible).to be_falsey()
     client1.provide_input("yes")
     client2.provide_input("yes")
-    expect(@server.create_game_if_possible).to eq(true)
+    expect(@server.create_game_if_possible).to be_truthy()
   end
   # To-do: Test this without breaking encapsulation
   it "assigns a game to two clients" do
@@ -167,6 +167,8 @@ describe WarSocketServer do
       client1_output = @clients[0].capture_output()
       client2_output = @clients[1].capture_output()
       expect(client1_output).to include("Player 1 took a 10 of Diamonds with a J of Clubs")
+      expect(client1_output).to include("Player 1 took a Q of Hearts with a K of Spades")
+      expect(client2_output).to include("Player 1 took a 10 of Diamonds with a J of Clubs")
       expect(client2_output).to include("Player 1 took a Q of Hearts with a K of Spades")
     end
   end

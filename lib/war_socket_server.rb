@@ -42,14 +42,18 @@ class WarSocketServer
     puts "No client to accept"
   end
 
-  def create_game_if_possible
-    ready_to_play_value = ready_to_play?
-    if @pending_clients.length.even? && ready_to_play_value
+  def create_game_if_possible()
+    # client1 = @pending_clients[0]
+    # client2 = @pending_clients[1]
+    # client1.puts("Are you ready to commence?")
+    # client2.puts("Are you ready to commence?")
+    if @pending_clients.length == 2 && ready_to_play?(@pending_clients[0], @pending_clients[1])
       game = WarGame.new()
       @games_to_clients.store(game, @pending_clients.shift(2))
       game.start_game()
+      return game
     end
-    ready_to_play_value
+    false
   end
 
   def find_game(game_id)
@@ -74,6 +78,19 @@ class WarSocketServer
     players.each {|player| player.puts(result)}
   end
 
+  def run_game(game)
+    client1 = @games_to_clients[game][0]
+    client2 = @games_to_clients[game][1]
+    until game.winner do
+      client1.puts("Are you ready to commence?")
+      client2.puts("Are you ready to commence?")
+      if ready_to_play?(client1, client2)
+        run_round(game)
+      end
+    end
+    end_game(game)
+  end
+
   private
   def capture_output(client, delay=0.1)
     sleep(delay)
@@ -83,19 +100,10 @@ class WarSocketServer
     output = "No Output Available"
   end
 
-  def ready_to_play?
-    client1 = @pending_clients[0]
-    client1.puts("Are you ready to play?")
-    if @pending_clients.length > 1
-      client2 = @pending_clients[1]
-      client2.puts("Are you ready to play?")
-      if capture_output(client1) == "yes\n" && capture_output(client2) == "yes\n"
-        return true
-      else
-        return false
-      end
-    end
-    if capture_output(client1) == "yes\n"
+  def ready_to_play?(client1, client2)
+    client1_output = capture_output(client1)
+    client2_output = capture_output(client2)
+    if client1_output == "yes\n" && client2_output == "yes\n"
       return true
     else
       return false
