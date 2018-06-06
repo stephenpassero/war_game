@@ -114,5 +114,13 @@ describe WarSocketServer do
     @server.create_game_if_possible
     num_of_games = 2
     expect(@server.games_to_clients.length).to eq(num_of_games)
+    client5 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 5")
+    client5.provide_input("yes")
+    client6 = MockWarSocketClient.new(@server.port_number)
+    @server.accept_new_client("Player 6")
+    client6.provide_input("yes")
+    @server.create_game_if_possible
+    expect(expect(@server.games_to_clients.length).to eq(num_of_games + 1))
   end
 end
