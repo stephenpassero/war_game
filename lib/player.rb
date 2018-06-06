@@ -21,7 +21,15 @@ class Player
     @deck.play_top_card
   end
 
+  def add_to_hand(arr_of_cards)
+    @deck.add(arr_of_cards)
+  end
+
   def set_hand(arr_of_cards)
-    deck.add(arr_of_cards)
+    @deck = CardDeck.new(arr_of_cards)
+  end
+
+  def cards_left
+    @deck.cards_left
   end
 end

@@ -21,6 +21,14 @@ class WarSocketServer
     @server = TCPServer.new(port_number)
   end
 
+  def nums_of_clients_in_a_game(index_of_game)
+    games_to_clients.values[index_of_game].length
+  end
+
+  def num_of_games()
+    games_to_clients.length
+  end
+
   def accept_new_client(player_name = "Random Player")
     client = @server.accept_nonblock
     @pending_clients.push(client)
@@ -37,13 +45,33 @@ class WarSocketServer
   def create_game_if_possible
     ready_to_play_value = ready_to_play?
     if @pending_clients.length.even? && ready_to_play_value
-      @games_to_clients.store(WarGame.new(), @pending_clients.shift(2))
+      game = WarGame.new()
+      @games_to_clients.store(game, @pending_clients.shift(2))
+      game.start_game()
     end
     ready_to_play_value
   end
 
+  def find_game(game_id)
+    @games_to_clients.keys[game_id]
+  end
+
   def stop
     @server.close if @server
+  end
+
+  def set_player_hand(game, player, arr_of_cards)
+    if player == "player1"
+      game.player1.set_hand(arr_of_cards)
+    else
+      game.player2.set_hand(arr_of_cards)
+    end
+  end
+
+  def run_round(game)
+    result = game.start_round
+    players = @games_to_clients.fetch(game)
+    players.each {|player| player.puts(result)}
   end
 
   private

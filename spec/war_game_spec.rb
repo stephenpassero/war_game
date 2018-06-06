@@ -14,8 +14,8 @@ describe("war_game") do
     game = WarGame.new()
     card1 = Card.new("J", "Spades")
     card2 = Card.new(7, "Diamonds")
-    game.player1.set_hand([card1])
-    game.player2.set_hand([card2])
+    game.player1.add_to_hand([card1])
+    game.player2.add_to_hand([card2])
     game.start_round()
     expect(game.player1.deck.cards_left).to eq(2)
     expect(game.player2.deck.cards_left).to eq(0)
@@ -23,8 +23,8 @@ describe("war_game") do
 
   it("should judge who wins a war round") do
     game = WarGame.new()
-    game.player1.set_hand([Card.new("J", "Spades"), Card.new(10, "Spades"), Card.new(9, "Spades"), Card.new(8, "Spades"), Card.new(7, "Spades"), Card.new(6, "Spades")])
-    game.player2.set_hand([Card.new("J", "Hearts"), Card.new(10, "Hearts"), Card.new(9, "Hearts"), Card.new(8, "Hearts"), Card.new(6, "Hearts"), Card.new(7, "Hearts")])
+    game.player1.add_to_hand([Card.new("J", "Spades"), Card.new(10, "Spades"), Card.new(9, "Spades"), Card.new(8, "Spades"), Card.new(7, "Spades"), Card.new(6, "Spades")])
+    game.player2.add_to_hand([Card.new("J", "Hearts"), Card.new(10, "Hearts"), Card.new(9, "Hearts"), Card.new(8, "Hearts"), Card.new(6, "Hearts"), Card.new(7, "Hearts")])
     player1_count = game.player1.deck.cards_left
     player2_count = game.player2.deck.cards_left
     game.start_round()
@@ -36,8 +36,8 @@ describe("war_game") do
 
   # it("should judge who wins a double war round") do
   #   game = WarGame.new()
-  #   game.player1.set_hand([Card.new("J", "Spades"), Card.new(10, "Spades"), Card.new(9, "Spades"), Card.new(8, "Spades"), Card.new(7, "Spades"), Card.new(6, "Spades"), Card.new(6, "Spades"), Card.new(6, "Spades"), Card.new(6, "Spades"), Card.new(6, "Spades"), Card.new(8, "Spades")])
-  #   game.player2.set_hand([Card.new("J", "Hearts"), Card.new(10, "Hearts"), Card.new(9, "Hearts"), Card.new(8, "Hearts"), Card.new(6, "Hearts"), Card.new(8, "Hearts"), Card.new("K", "Hearts"), Card.new(7, "Hearts"), Card.new(7, "Hearts"), Card.new(7, "Hearts"), Card.new(7, "Hearts")])
+  #   game.player1.add_to_hand([Card.new("J", "Spades"), Card.new(10, "Spades"), Card.new(9, "Spades"), Card.new(8, "Spades"), Card.new(7, "Spades"), Card.new(6, "Spades"), Card.new(6, "Spades"), Card.new(6, "Spades"), Card.new(6, "Spades"), Card.new(6, "Spades"), Card.new(8, "Spades")])
+  #   game.player2.add_to_hand([Card.new("J", "Hearts"), Card.new(10, "Hearts"), Card.new(9, "Hearts"), Card.new(8, "Hearts"), Card.new(6, "Hearts"), Card.new(8, "Hearts"), Card.new("K", "Hearts"), Card.new(7, "Hearts"), Card.new(7, "Hearts"), Card.new(7, "Hearts"), Card.new(7, "Hearts")])
   #   player1_count = game.player1.deck.cards_left
   #   player2_count = game.player2.deck.cards_left
   #   game.start_round()

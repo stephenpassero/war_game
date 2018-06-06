@@ -21,7 +21,7 @@ class WarGame
 
   def start_game()
     distribute_deck(@player1, @player2, @deck)
-    puts "Player 1 cards left: #{@player1.deck.cards_left}. Player 2 cards left: #{player2.deck.cards_left}"
+    return "Player 1 and Player 2 both have 26 cards left"
   end
 
   def start_round()

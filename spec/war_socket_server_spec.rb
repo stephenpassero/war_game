@@ -1,6 +1,7 @@
 
 require 'socket'
 require_relative '../lib/war_socket_server'
+require_relative '../lib/card'
 
 class MockWarSocketClient
   attr_reader :socket
@@ -28,8 +29,8 @@ end
 
 describe WarSocketServer do
   before(:each) do
-    @clients = []
     @server = WarSocketServer.new
+    @clients = []
   end
 
   after(:each) do
@@ -48,17 +49,17 @@ describe WarSocketServer do
     client1 = MockWarSocketClient.new(@server.port_number)
     @server.accept_new_client("Player 1")
     @server.create_game_if_possible
-    expect(@server.games_to_clients.count).to be 0
+    expect(@server.num_of_games).to be 0
     client2 = MockWarSocketClient.new(@server.port_number)
     client2.provide_input("yes")
     client1.provide_input("yes")
     @server.accept_new_client("Player 2")
     @server.create_game_if_possible
-    expect(@server.games_to_clients.count).to be 1
+    expect(@server.num_of_games).to be 1
     client3 = MockWarSocketClient.new(@server.port_number)
     @server.accept_new_client("Player 3")
     client3.provide_input("yes")
-    expect(@server.games_to_clients.count).to be 1
+    expect(@server.num_of_games).to be 1
   end
 
   it "gives each player a response when they join" do
@@ -82,7 +83,7 @@ describe WarSocketServer do
     client2.provide_input("yes")
     expect(@server.create_game_if_possible).to eq(true)
   end
-
+  # To-do: Test this without breaking encapsulation
   it "assigns a game to two clients" do
     @server.start
     client1 = MockWarSocketClient.new(@server.port_number)
@@ -93,7 +94,8 @@ describe WarSocketServer do
     client1.provide_input("yes")
     @server.create_game_if_possible
     num_of_clients = 2
-    expect(@server.games_to_clients.values[0].length).to eq(num_of_clients)
+    game_index = 0
+    expect(@server.nums_of_clients_in_a_game(game_index)).to eq(num_of_clients)
   end
 
   it "creates multiple games for more than 3 players" do
@@ -112,8 +114,7 @@ describe WarSocketServer do
     client3.provide_input("yes")
     client4.provide_input("yes")
     @server.create_game_if_possible
-    num_of_games = 2
-    expect(@server.games_to_clients.length).to eq(num_of_games)
+    expect(@server.num_of_games).to eq (2)
     client5 = MockWarSocketClient.new(@server.port_number)
     @server.accept_new_client("Player 5")
     client5.provide_input("yes")
@@ -121,6 +122,52 @@ describe WarSocketServer do
     @server.accept_new_client("Player 6")
     client6.provide_input("yes")
     @server.create_game_if_possible
-    expect(expect(@server.games_to_clients.length).to eq(num_of_games + 1))
+    expect(@server.num_of_games).to eq (3)
+  end
+
+  describe "#run_round" do
+    before(:each) do
+      @server.start
+      client1 = MockWarSocketClient.new(@server.port_number)
+      @server.accept_new_client("Player 1")
+      client2 = MockWarSocketClient.new(@server.port_number)
+      @server.accept_new_client("Player 2")
+      client2.provide_input("yes")
+      client1.provide_input("yes")
+      @clients.push(client1, client2)
+    end
+
+    it "returns the output of each round" do
+      @server.create_game_if_possible
+      game_id = 0
+      card1 = Card.new("J", "Clubs")
+      card2 = Card.new(9, "Hearts")
+      game = @server.find_game(game_id)
+      @server.set_player_hand(game, "player1", [card1])
+      @server.set_player_hand(game, "player2", [card2])
+      @server.run_round(game)
+      client1_output = @clients[0].capture_output()
+      client2_output = @clients[1].capture_output()
+      expect(client1_output).to include("Player 1 took a 9 of Hearts with a J of Clubs")
+      expect(client2_output).to include("Player 1 took a 9 of Hearts with a J of Clubs")
+    end
+
+    it "can run multiple rounds" do
+      @server.create_game_if_possible
+      game_id = 0
+      card1 = Card.new("J", "Clubs")
+      card2 = Card.new("K", "Spades")
+      card3 = Card.new(10, "Diamonds")
+      card4 = Card.new("Q", "Hearts")
+      game = @server.find_game(game_id)
+      @server.set_player_hand(game, "player1", [card1, card2])
+      @server.set_player_hand(game, "player2", [card3, card4])
+      @server.run_round(game)
+      @server.run_round(game)
+      client1_output = @clients[0].capture_output()
+      client2_output = @clients[1].capture_output()
+      expect(client1_output).to include("Player 1 took a 10 of Diamonds with a J of Clubs")
+      expect(client2_output).to include("Player 1 took a Q of Hearts with a K of Spades")
+    end
   end
 end
