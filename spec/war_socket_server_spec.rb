@@ -72,18 +72,6 @@ describe WarSocketServer do
     expect(client2.capture_output).to eq("Welcome! The war will begin shortly.\n")
   end
 
-  it "doesn't start the round until both players are ready" do
-    @server.start
-    client1 = MockWarSocketClient.new(@server.port_number)
-    @server.accept_new_client("Player 1")
-    client2 = MockWarSocketClient.new(@server.port_number)
-    @server.accept_new_client("Player 2")
-    expect(@server.create_game_if_possible).to be_falsey()
-    client1.provide_input("yes")
-    client2.provide_input("yes")
-    expect(@server.create_game_if_possible).to be_truthy()
-  end
-  # To-do: Test this without breaking encapsulation
   it "assigns a game to two clients" do
     @server.start
     client1 = MockWarSocketClient.new(@server.port_number)

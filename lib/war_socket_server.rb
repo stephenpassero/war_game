@@ -77,29 +77,27 @@ class WarSocketServer
 
   def run_round(game)
     result = game.start_round
-    players = @games_to_clients.fetch(game)
-    players.each {|player| player.puts(result)}
+    clients = @games_to_clients[game]
+    clients.each {|client| client.puts(result)}
   end
 
   def run_game(game)
-    binding.pry
     client1 = @games_to_clients[game][0]
     client2 = @games_to_clients[game][1]
     until game.winner do
       client1.puts("Are you ready to commence?")
       client2.puts("Are you ready to commence?")
-      if ready_to_play?(game)
+      ready_to_play?(game)
         run_round_value = run_round(game)
         if run_round_value == "Player 1"
           client1.puts("Game Over... Player 1 has won!")
           client2.puts("Game Over... Player 1 has won!")
-          break;
+          break
         elsif run_round_value == "Player 2"
           client1.puts("Game Over... Player 2 has won!")
           client2.puts("Game Over... Player 2 has won!")
-          break;
+          break
         end
-      end
       # Client is informed of round results in run_round
     end
     client1.puts("Game Over... #{game.winner} has won!")
