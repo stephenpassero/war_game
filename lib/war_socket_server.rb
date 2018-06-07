@@ -29,9 +29,10 @@ class WarSocketServer
   end
 
   def accept_new_client(player_name = "Random Player")
+    sleep(1)
     client = @server.accept_nonblock
     @pending_clients.push(client)
-    if @pending_clients.size.odd?
+    if @pending_clients.length.odd?
       client.puts("Welcome! Waiting for other players to join...")
     else
       client.puts("Welcome! The war will begin shortly.")
@@ -50,13 +51,12 @@ class WarSocketServer
       client2 = @pending_clients[1]
       client2.puts("Are you ready to commence?")
     end
-    if @pending_clients.length == 2 && ready_to_play?(@pending_clients[0], @pending_clients[1])
+    if @pending_clients.length == 2
       game = WarGame.new()
       @games_to_clients.store(game, @pending_clients.shift(2))
       game.start_game()
       return game
     end
-    false
   end
 
   def find_game(game_id)
@@ -82,12 +82,13 @@ class WarSocketServer
   end
 
   def run_game(game)
+    binding.pry
     client1 = @games_to_clients[game][0]
     client2 = @games_to_clients[game][1]
     until game.winner do
       client1.puts("Are you ready to commence?")
       client2.puts("Are you ready to commence?")
-      if ready_to_play?(client1, client2)
+      if ready_to_play?(game)
         run_round_value = run_round(game)
         if run_round_value == "Player 1"
           client1.puts("Game Over... Player 1 has won!")
@@ -105,22 +106,31 @@ class WarSocketServer
     client2.puts("Game Over... #{game.winner} has won!")
   end
 
+  def ready_to_play?(game, client1_output="", client2_output="")
+    if client1_output == ""
+      client1_output = capture_output(game, 0)
+    end
+    if client2_output == ""
+      client2_output = capture_output(game, 1)
+    end
+    if client1_output == "yes\n" && client2_output == "yes\n"
+      return true
+    elsif client1_output == "yes\n"
+      ready_to_play?(game, "yes\n", "")
+    elsif client2_output == "yes\n"
+      ready_to_play?(game, "", "yes\n")
+    else
+      ready_to_play?(game)
+    end
+  end
+
   private
-  def capture_output(client, delay=0.1)
+  def capture_output(game, desired_client, delay=0.1)
     sleep(delay)
     output = ""
+    client = @games_to_clients[game][desired_client]
     output = client.read_nonblock(1000)
   rescue IO::WaitReadable
     output = "No Output Available"
-  end
-
-  def ready_to_play?(client1, client2)
-    client1_output = capture_output(client1)
-    client2_output = capture_output(client2)
-    if client1_output == "yes\n" && client2_output == "yes\n"
-      return true
-    else
-      return false
-    end
   end
 end

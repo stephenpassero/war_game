@@ -98,34 +98,7 @@ describe WarSocketServer do
     expect(@server.nums_of_clients_in_a_game(game_index)).to eq(num_of_clients)
   end
 
-  it "creates multiple games for more than 3 players" do
-    @server.start
-    client1 = MockWarSocketClient.new(@server.port_number)
-    @server.accept_new_client("Player 1")
-    client2 = MockWarSocketClient.new(@server.port_number)
-    @server.accept_new_client("Player 2")
-    client2.provide_input("yes")
-    client1.provide_input("yes")
-    @server.create_game_if_possible
-    client3 = MockWarSocketClient.new(@server.port_number)
-    @server.accept_new_client("Player 3")
-    client4 = MockWarSocketClient.new(@server.port_number)
-    @server.accept_new_client("Player 4")
-    client3.provide_input("yes")
-    client4.provide_input("yes")
-    @server.create_game_if_possible
-    expect(@server.num_of_games).to eq (2)
-    client5 = MockWarSocketClient.new(@server.port_number)
-    @server.accept_new_client("Player 5")
-    client5.provide_input("yes")
-    client6 = MockWarSocketClient.new(@server.port_number)
-    @server.accept_new_client("Player 6")
-    client6.provide_input("yes")
-    @server.create_game_if_possible
-    expect(@server.num_of_games).to eq (3)
-  end
-
-  describe "#run_round" do
+  context "war_socket_server" do
     before(:each) do
       @server.start
       client1 = MockWarSocketClient.new(@server.port_number)
@@ -135,6 +108,17 @@ describe WarSocketServer do
       client2.provide_input("yes")
       client1.provide_input("yes")
       @clients.push(client1, client2)
+    end
+    it "creates multiple games for more than 3 players" do
+      @server.create_game_if_possible
+      client3 = MockWarSocketClient.new(@server.port_number)
+      @server.accept_new_client("Player 3")
+      client4 = MockWarSocketClient.new(@server.port_number)
+      @server.accept_new_client("Player 4")
+      client3.provide_input("yes")
+      client4.provide_input("yes")
+      @server.create_game_if_possible
+      expect(@server.num_of_games).to eq (2)
     end
 
     it "returns the output of each round" do
@@ -171,19 +155,20 @@ describe WarSocketServer do
       expect(client2_output).to include("Player 1 took a 10 of Diamonds with a J of Clubs")
       expect(client2_output).to include("Player 1 took a Q of Hearts with a K of Spades")
     end
-  end
 
-    # it "#ready_to_play should remember each client's response" do
-    #   @server.start
-    #   client1 = MockWarSocketClient.new(@server.port_number)
-    #   @server.accept_new_client("Player 1")
-    #   client2 = MockWarSocketClient.new(@server.port_number)
-    #   @server.accept_new_client("Player 2")
-    #   @clients.push(client1, client2)
-    #   client1.provide_input("yes")
-    #   expect(@server.create_game_if_possible)
-    #   client2.provide_input("yes")
-    #
-    #
-    # end
+    it "#ready_to_play should remember each client's response" do
+      #doesn't really test this. Need to make a thread to truely test it.
+      @server.create_game_if_possible
+      client3 = MockWarSocketClient.new(@server.port_number)
+      @server.accept_new_client("Player 3")
+      client4 = MockWarSocketClient.new(@server.port_number)
+      @server.accept_new_client("Player 4")
+      @clients.push(client3, client4)
+      client3.provide_input("yes")
+      sleep(0.2)
+      client4.provide_input("yes")
+      game = @server.create_game_if_possible
+      expect(@server.ready_to_play?(game)).to eq(true)
+    end
+  end
 end

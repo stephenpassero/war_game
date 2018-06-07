@@ -7,6 +7,7 @@ while true
   server.accept_new_client
   game = server.create_game_if_possible
   if game
+    binding.pry
     server.run_game(game)
   end
 
