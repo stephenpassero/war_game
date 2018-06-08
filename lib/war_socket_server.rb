@@ -137,8 +137,9 @@ class WarSocketServer
   end
 
   def ready_to_play?(game)
-    client1_output="", client2_output=""
-    until client1_output != "yes\n" and client2_output != "yes\n" do
+    client1_output=""
+    client2_output=""
+    until client1_output == "yes\n" and client2_output == "yes\n" do
       if client1_output == ""
         client1_output = capture_output(game, 0)
       end
@@ -157,6 +158,6 @@ class WarSocketServer
     client = @games_to_clients[game][desired_client]
     output = client.read_nonblock(1000)
   rescue IO::WaitReadable
-    output = "No Output Available"
+    output = ""
   end
 end

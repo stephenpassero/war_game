@@ -1,4 +1,5 @@
 require 'socket'
+require 'pry'
 
 should_connect = true
 
@@ -7,30 +8,16 @@ while should_connect do
   begin
     server = TCPSocket.new("localhost", 3001)
     puts server.gets
-    puts server.gets
-
-    def capture_output(source)
-      sleep(0.1)
-      return source.read_nonblock(1000) # not gets which blocks
-    rescue IO::WaitReadable
-      return nil
-    end
-
-    loop do
-      output = server.gets
-      if output
-        puts output
-      end
-
-      # input = capture_output(STDIN)
+    while true
+      puts server.gets
       answer = ''
       until answer == "yes\n"
-        # server.puts(input)
-        answer =  gets
+        answer = gets.downcase
       end
       server.puts answer
+      puts server.gets
+      puts server.gets
     end
-
 
   rescue Errno::ECONNREFUSED
     puts "Waiting for server to arrive..."
