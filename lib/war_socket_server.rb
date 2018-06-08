@@ -43,14 +43,6 @@ class WarSocketServer
   end
 
   def create_game_if_possible()
-    if @pending_clients[0]
-      client1 = @pending_clients[0]
-      client1.puts("Are you ready to commence?")
-    end
-    if @pending_clients[1]
-      client2 = @pending_clients[1]
-      client2.puts("Are you ready to commence?")
-    end
     if @pending_clients.length == 2
       game = WarGame.new()
       @games_to_clients.store(game, @pending_clients.shift(2))
@@ -75,18 +67,26 @@ class WarSocketServer
     end
   end
 
+  def player_cards_left(game, player)
+    game.player_cards_left(player)
+  end
+
   def run_round(game)
     result = game.start_round
-    clients = @games_to_clients[game]
-    clients.each {|client| client.puts(result)}
+    client1 = @games_to_clients[game][0]
+    client2 = @games_to_clients[game][1]
+    client1.puts(result)
+    client2.puts(result)
+    client1.puts("You have #{player_cards_left(game, game.player1)} cards left")
+    client2.puts("You have #{player_cards_left(game, game.player2)} cards left")
   end
 
   def run_game(game)
     client1 = @games_to_clients[game][0]
     client2 = @games_to_clients[game][1]
     until game.winner do
-      client1.puts("Are you ready to commence?")
-      client2.puts("Are you ready to commence?")
+      client1.puts("Are you ready to play your next card?")
+      client2.puts("Are you ready to play your next card?")
       ready_to_play?(game)
         run_round_value = run_round(game)
         if run_round_value == "Player 1"
@@ -100,26 +100,54 @@ class WarSocketServer
         end
       # Client is informed of round results in run_round
     end
-    client1.puts("Game Over... #{game.winner} has won!")
-    client2.puts("Game Over... #{game.winner} has won!")
+    if game.winner
+      client1.puts("Game Over... #{game.winner} has won!")
+      client2.puts("Game Over... #{game.winner} has won!")
+    end
+    end_game(game, client1, client2)
   end
 
-  def ready_to_play?(game, client1_output="", client2_output="")
-    if client1_output == ""
-      client1_output = capture_output(game, 0)
-    end
-    if client2_output == ""
-      client2_output = capture_output(game, 1)
-    end
-    if client1_output == "yes\n" && client2_output == "yes\n"
-      return true
-    elsif client1_output == "yes\n"
-      ready_to_play?(game, "yes\n", "")
-    elsif client2_output == "yes\n"
-      ready_to_play?(game, "", "yes\n")
+  def end_game(game, client1, client2)
+    client1.puts("Would you like to play again?")
+    client2.puts("Would you like to play again?")
+    play_again_player1(game, client1)
+    play_again_player2(game, client2)
+  end
+
+  def play_again_player1(game, client1)
+    client1_output = capture_output(game, 0)
+    if client1_output == "yes\n"
+      @pending_clients.push(client1)
+    elsif client1_output != "No Output Available"
+      client1.close
     else
-      ready_to_play?(game)
+      play_again_player1(game, client1)
     end
+  end
+  #To-do: Make both play_again_player1 and play_again_player2 not call themseleves, but run in a loop
+  def play_again_player2(game, client2)
+    client2_output = capture_output(game, 0)
+    if client2_output == "yes\n"
+      @pending_clients.push(client2)
+    elsif client2_output != "No Output Available"
+      client2.close
+    else
+      play_again_player2(game, client2)
+    end
+  end
+
+  def ready_to_play?(game)
+    client1_output="", client2_output=""
+    until client1_output != "yes\n" and client2_output != "yes\n" do
+      if client1_output == ""
+        client1_output = capture_output(game, 0)
+      end
+      if client2_output == ""
+        client2_output = capture_output(game, 1)
+      end
+      sleep(0.1)
+    end
+    true
   end
 
   private

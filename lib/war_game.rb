@@ -35,6 +35,10 @@ class WarGame
       return "Player 2"
     end
   end
+
+  def player_cards_left(player)
+    player.cards_left
+  end
 end
 
   private

@@ -133,6 +133,7 @@ describe WarSocketServer do
       card4 = Card.new("Q", "Hearts")
       game = @server.find_game(game_id)
       @server.set_player_hand(game, "player1", [card1, card2])
+      @server.set_player_hand(game, "player1", [card1, card2])
       @server.set_player_hand(game, "player2", [card3, card4])
       @server.run_round(game)
       @server.run_round(game)
@@ -145,7 +146,7 @@ describe WarSocketServer do
     end
 
     it "#ready_to_play should remember each client's response" do
-      #doesn't really test this. Need to make a thread to truely test it.
+      #This test doesn't really test that #ready_to_play remember's each client's response. Need to make a thread to truely test it.
       @server.create_game_if_possible
       client3 = MockWarSocketClient.new(@server.port_number)
       @server.accept_new_client("Player 3")
@@ -153,7 +154,6 @@ describe WarSocketServer do
       @server.accept_new_client("Player 4")
       @clients.push(client3, client4)
       client3.provide_input("yes")
-      sleep(0.2)
       client4.provide_input("yes")
       game = @server.create_game_if_possible
       expect(@server.ready_to_play?(game)).to eq(true)
