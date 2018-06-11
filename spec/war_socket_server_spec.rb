@@ -146,7 +146,7 @@ describe WarSocketServer do
     end
 
     it "#ready_to_play should remember each client's response" do
-      #This test doesn't really test that #ready_to_play remember's each client's response. Need to make a thread to truely test it.
+      #This test doesn't really test that #ready_to_play remembers each client's response. Need to make a thread to truely test it.
       @server.create_game_if_possible
       client3 = MockWarSocketClient.new(@server.port_number)
       @server.accept_new_client("Player 3")

@@ -90,6 +90,7 @@ class WarSocketServer
       ready_to_play?(game)
         run_round_value = run_round(game)
         if run_round_value == "Player 1"
+          game_over_player1 = "Game Over... Player 1 has won!"
           client1.puts("Game Over... Player 1 has won!")
           client2.puts("Game Over... Player 1 has won!")
           end_game(client1, client2)

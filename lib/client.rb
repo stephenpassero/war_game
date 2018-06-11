@@ -7,14 +7,17 @@ while should_connect do
 
   begin
     server = TCPSocket.new("localhost", 3001)
+    # Gets the waiting for other players input
     puts server.gets
-    while true
+    loop do
+      # Gets the are you ready to play your next card prompt
       puts server.gets
-      answer = "yes\n"
+      answer = ""
       until answer == "yes\n"
         answer = gets.downcase
       end
       server.puts answer
+      # Gets the round's results
       text = server.gets
       if text == "Game Over... Player 1 has won!" || text == "Game Over... Player 2 has won!"
         should_connect = false
