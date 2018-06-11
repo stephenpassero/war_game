@@ -30,9 +30,9 @@ class WarGame
 
   def winner()
     if @player1.deck.cards_left == 0
-      return "Player 1";
+      return "Player 2";
     elsif @player2.deck.cards_left == 0
-      return "Player 2"
+      return "Player 1"
     end
   end
 

@@ -17,7 +17,7 @@ class WarSocketServer
   end
 
   def start
-    @server = TCPServer.new(port_number)
+    @server = TCPServer.new(3001)
   end
 
   def nums_of_clients_in_a_game(index_of_game)
@@ -92,10 +92,12 @@ class WarSocketServer
         if run_round_value == "Player 1"
           client1.puts("Game Over... Player 1 has won!")
           client2.puts("Game Over... Player 1 has won!")
+          end_game(client1, client2)
           break
         elsif run_round_value == "Player 2"
           client1.puts("Game Over... Player 2 has won!")
           client2.puts("Game Over... Player 2 has won!")
+          end_game(client1, client2)
           break
         end
       # Client is informed of round results in run_round
@@ -103,36 +105,8 @@ class WarSocketServer
     if game.winner
       client1.puts("Game Over... #{game.winner} has won!")
       client2.puts("Game Over... #{game.winner} has won!")
-    end
-    end_game(game, client1, client2)
-  end
-
-  def end_game(game, client1, client2)
-    client1.puts("Would you like to play again?")
-    client2.puts("Would you like to play again?")
-    play_again_player1(game, client1)
-    play_again_player2(game, client2)
-  end
-
-  def play_again_player1(game, client1)
-    client1_output = capture_output(game, 0)
-    if client1_output == "yes\n"
-      @pending_clients.push(client1)
-    elsif client1_output != "No Output Available"
       client1.close
-    else
-      play_again_player1(game, client1)
-    end
-  end
-  #To-do: Make both play_again_player1 and play_again_player2 not call themseleves, but run in a loop
-  def play_again_player2(game, client2)
-    client2_output = capture_output(game, 0)
-    if client2_output == "yes\n"
-      @pending_clients.push(client2)
-    elsif client2_output != "No Output Available"
       client2.close
-    else
-      play_again_player2(game, client2)
     end
   end
 

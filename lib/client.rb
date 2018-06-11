@@ -10,21 +10,30 @@ while should_connect do
     puts server.gets
     while true
       puts server.gets
-      answer = ''
+      answer = "yes\n"
       until answer == "yes\n"
         answer = gets.downcase
       end
       server.puts answer
-      puts server.gets
+      text = server.gets
+      if text == "Game Over... Player 1 has won!" || text == "Game Over... Player 2 has won!"
+        should_connect = false
+        break;
+      end
+      puts "Waiting for opponent's response..."
+      puts text
       puts server.gets
     end
 
-  rescue Errno::ECONNREFUSED
-    puts "Waiting for server to arrive..."
-    sleep (3)
+rescue Errno::ECONNREFUSED
+  puts "Waiting for server to arrive..."
+  sleep (3)
 
-  rescue EOFError
-    puts "Game over!"
-    should_connect = false
-  end
+rescue EOFError
+  puts "Game over!"
+  should_connect = false
+
+rescue Errno::ECONNRESET
+  should_connect = false;
+end
 end
