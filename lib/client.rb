@@ -10,22 +10,20 @@ while should_connect do
     # Gets the waiting for other players input
     puts server.gets
     loop do
-      # Gets the are you ready to play your next card prompt
-      puts server.gets
-      answer = ""
+      puts server.gets # Gets the are you ready to play your next card prompt
+      answer = "yes\n"
       until answer == "yes\n"
         answer = gets.downcase
       end
       server.puts answer
-      # Gets the round's results
-      text = server.gets
-      if text == "Game Over... Player 1 has won!" || text == "Game Over... Player 2 has won!"
+      round_results = server.gets # Gets the round's results
+      if round_results == "Game Over... Player 1 has won!" || round_results == "Game Over... Player 2 has won!"
         should_connect = false
         break;
       end
       puts "Waiting for opponent's response..."
-      puts text
-      puts server.gets
+      puts round_results
+      puts server.gets # Gets how many cards you have left
     end
 
 rescue Errno::ECONNREFUSED

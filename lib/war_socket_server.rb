@@ -3,6 +3,7 @@ require_relative 'war_game'
 require('pry')
 
 class WarSocketServer
+
   def initialize
     @pending_clients = []
     @games_to_clients = {}
@@ -13,7 +14,7 @@ class WarSocketServer
   end
 
   def games_to_clients
-    @games_to_clients
+    games_to_clients
   end
 
   def start
@@ -29,7 +30,7 @@ class WarSocketServer
   end
 
   def accept_new_client(player_name = "Random Player")
-    sleep(1)
+    sleep(0.1)
     client = @server.accept_nonblock
     @pending_clients.push(client)
     if @pending_clients.length.odd?
@@ -45,14 +46,14 @@ class WarSocketServer
   def create_game_if_possible()
     if @pending_clients.length == 2
       game = WarGame.new()
-      @games_to_clients.store(game, @pending_clients.shift(2))
+      games_to_clients.store(game, @pending_clients.shift(2))
       game.start_game()
       return game
     end
   end
 
   def find_game(game_id)
-    @games_to_clients.keys[game_id]
+    games_to_clients.keys[game_id]
   end
 
   def stop
@@ -73,8 +74,8 @@ class WarSocketServer
 
   def run_round(game)
     result = game.start_round
-    client1 = @games_to_clients[game][0]
-    client2 = @games_to_clients[game][1]
+    client1 = games_to_clients[game][0]
+    client2 = games_to_clients[game][1]
     client1.puts(result)
     client2.puts(result)
     client1.puts("You have #{player_cards_left(game, game.player1)} cards left")
@@ -82,8 +83,8 @@ class WarSocketServer
   end
 
   def run_game(game)
-    client1 = @games_to_clients[game][0]
-    client2 = @games_to_clients[game][1]
+    client1 = games_to_clients[game][0]
+    client2 = games_to_clients[game][1]
     until game.winner do
       client1.puts("Are you ready to play your next card?")
       client2.puts("Are you ready to play your next card?")
@@ -121,16 +122,19 @@ class WarSocketServer
       if client2_output == ""
         client2_output = capture_output(game, 1)
       end
-      sleep(0.1)
     end
     true
   end
 
   private
+  def games_to_clients()
+    @games_to_clients
+  end
+
   def capture_output(game, desired_client, delay=0.1)
     sleep(delay)
     output = ""
-    client = @games_to_clients[game][desired_client]
+    client = games_to_clients[game][desired_client]
     output = client.read_nonblock(1000)
   rescue IO::WaitReadable
     output = ""
